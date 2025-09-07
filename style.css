@@ -1,0 +1,42 @@
+*{
+    box-sizing: border-box;
+    margin: 10px;
+}
+
+
+
+
+.vid{
+
+    width : 300px;
+    height : 300px;
+
+    background-color: aqua;
+
+}
+
+
+
+#videoframe{
+
+    display:flex;
+
+
+
+}
+
+#log{
+
+    background-color: aqua;
+    height : 100px;
+    width : 50%;
+}
+
+
+#chatbox{
+
+    height : 300px;
+    width: 50%;
+    background-color: aqua;
+
+}
