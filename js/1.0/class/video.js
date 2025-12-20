@@ -26,11 +26,25 @@ export default class Video extends Notification{
 
         this.peer = peer
     
+
+        this.checkMediaSources()
     
         this.init()
     
     
     }
+
+
+    
+    checkMediaSources(){
+
+
+        this.init()
+
+
+
+    }
+
 
 
 
