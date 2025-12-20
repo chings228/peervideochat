@@ -10,21 +10,15 @@ export default class CreatePeer{
 
     callback
 
-    peers = {}
-
-    turnsrever 
-
-    name
 
     param
 
 
-
-    constructor(name,param,callback){
+    constructor(param,callback){
 
 
         this.callback = callback
-        this.name = name
+
         this.param = param
 
         console.log(this.param)
@@ -42,7 +36,7 @@ export default class CreatePeer{
                 console.log(this.turnserver)
 
 
-                this.connectPeer()
+                this.connectPeer(this.turnserver)
 
             }
 
@@ -56,11 +50,61 @@ export default class CreatePeer{
     }
 
 
-    connectPeer(){
+    connectPeer(turnserver){
 
 
 
-        
+
+
+        const option = {}
+
+
+        option.config = turnserver
+        option.path = '/'
+
+
+        console.log(option)
+
+
+        console.log(this.param.hostid)
+
+        const peer = new Peer(this.param.hostid,option)
+
+
+        console.log(peer)
+
+        peer.on("open",e=>{
+
+            console.log("peer open")
+
+            console.log(e)
+
+            this.callback(true,peer)
+
+        })
+
+
+        peer.on("error",e=>{
+
+
+            console.log("peer error",e)
+
+            this.callback(false,{})
+        })
+
+
+        peer.on("close",e=>{
+            console.log("peer close")
+        })
+
+
+        peer.on("disconnected",e=>{
+            console.log("peer disconnected")
+        })
+
+
+
+
     }
 
 
