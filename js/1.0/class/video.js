@@ -1,6 +1,6 @@
 
 
-import Notification from "./notification"
+import Notification from "./notification.js"
 
 
 export default class Video extends Notification{
@@ -17,6 +17,9 @@ export default class Video extends Notification{
 
         super()
 
+
+        this.isVideoInput = false
+        this.isAudioInput = false
       
 
         this.param = param
@@ -29,7 +32,7 @@ export default class Video extends Notification{
 
         this.checkMediaSources()
     
-        this.init()
+
     
     
     }
@@ -39,7 +42,55 @@ export default class Video extends Notification{
     checkMediaSources(){
 
 
-        this.init()
+
+        navigator.mediaDevices.enumerateDevices()
+        .then(devices=>{
+
+
+            let videoInput = []
+            let audioInput = []
+
+            devices.forEach(device =>{
+
+
+
+                //console.log(device.kind,device.label)
+
+                if (device.kind == 'videoinput'){
+
+                    videoInput.push(device)
+
+                }
+                else if (device.kind == 'audioinput'){
+                    audioInput.push(device)
+                }
+
+                
+
+
+            })
+
+            if (videoInput.length > 0) {
+                this.isVideoInput = true
+            }
+
+            if (audioInput.length > 0){
+                this.isAudioInput = true
+            }
+
+
+            console.log(videoInput)
+            console.log(audioInput)
+
+
+            this.init()
+
+
+
+        })
+
+
+       
 
 
 
@@ -47,8 +98,25 @@ export default class Video extends Notification{
 
 
 
+    stopVideo(){
+
+
+            this.guestvideo.style.display = 'none'
+
+            this.call.close()
+
+
+    }
+
+
+
+
 
     startVideo(){
+
+
+
+
 
         this.getStream().then(stream=>{
 
@@ -70,7 +138,7 @@ export default class Video extends Notification{
                     console.log("call stream")
                     this.addVideoStream(this.guestvideo,remotestream)
                 
-
+                    this.fire("streamcall",{})
 
             })
 
@@ -82,9 +150,29 @@ export default class Video extends Notification{
 
                     call.on('stream',remotestream=>{
 
+                        console.log("call stream")
+
                         this.remoteCameraStream = remotestream
                         this.addVideoStream(this.guestvideo,remotestream)
+
+                        this.fire("streamcall",{})
                     })
+
+
+
+                    call.on('close',e=>{
+
+                        console.log("call close",e)
+
+                        this.fire("streamclose",{})
+                    })
+
+                    call.on('error',e=>{
+
+                        console.log("call error",e)
+                    })
+
+
                 
 
 
@@ -97,21 +185,9 @@ export default class Video extends Notification{
             console.log(e)
             console.log("get local stream fail")
 
-            this.peer.on('call',call=>{
 
 
-                console.log("peer call")
-                call.answer(this.stream)
 
-                call.on('stream',remotestream=>{
-
-                    console.log()
-                    this.addVideoStream(this.guestvideo,remotestream)
-                })
-            
-
-
-            })
 
         })
 
@@ -126,19 +202,6 @@ export default class Video extends Notification{
         this.hostvideo = document.getElementById(this.param.hostdivid)
         this.guestvideo = document.getElementById(this.param.guestdivid)
 
-
-        console.log(this.hostvideo)
-
-
-
-
-
-
-    
-    
-    
-    
-    
     
     }
 
@@ -156,6 +219,8 @@ export default class Video extends Notification{
 
 
     addVideoStream(video,stream){
+
+        console.log("add video stream")
 
         video.srcObject = stream
 
@@ -178,7 +243,7 @@ export default class Video extends Notification{
     getStream(){
 
 
-        const multiplier = 1;
+        const multiplier = 0.5;
 
         const width = 600 * multiplier;
         const height = 400 * multiplier
@@ -188,12 +253,7 @@ export default class Video extends Notification{
 
         return new Promise((resolve, reject) => {
 
-            if (navigator.mediaDevices.getSupportedConstraints().zoom){
-                console.log("suppot zoom")
-            }
-            else{
-                console.log("not support zoom")
-            }
+
             navigator.mediaDevices
                 .getUserMedia({
                     video : { width: width, height: height },

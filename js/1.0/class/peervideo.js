@@ -19,6 +19,8 @@ export default class PeerVideo extends Notification{
     peerchat
     peervideo
 
+    isVideoStreaming 
+
 
     constructor(param,callback){
 
@@ -26,16 +28,11 @@ export default class PeerVideo extends Notification{
 
         super()
 
+        this.isVideoStreaming = false
+
 
         this.param = param
         this.callback = callback
-
-        console.log(param)
-
-
-
-     
-       
  
 
         this.initPeer()
@@ -48,6 +45,8 @@ export default class PeerVideo extends Notification{
 
 
     initPeer(){
+
+
 
 
         let peer_hostid = `pvc_host_${this.param.peerid}`
@@ -65,27 +64,27 @@ export default class PeerVideo extends Notification{
         this.param.guestid = peer_guestid
 
 
-        console.log(this.param)
+
 
         new CreatePeer(this.param,(res,peer)=>{
 
-            console.log(res)
-            console.log(peer)
-
-            console.log(this.param)
-
-            console.log(res)
+            
 
            
             if (!res){
 
                 console.log("fail connect peer")
+
+                this.fire("disconnected",{});
             
             }
             else{
+                this.peer = peer
 
 
                 console.log("procceed create chat ")
+               
+               
                 this.peerchat = new Chat(peer,this.param)
 
 
@@ -97,16 +96,61 @@ export default class PeerVideo extends Notification{
     
     
                 })
-    
-    
-                this.peervideo = new Video(peer,this.param)
-    
-    
+
+
                 this.peerchat.on("chatconnected",()=>{
+
+                    console.log("chat connected")
     
-                    this.fire("chatconnected","")
+                    this.fire("connected",{})
+                })
+
+
+                this.peerchat.on("disconnected",()=>{
+
+
+                    this.fire("disconnected",{});
                 })
     
+
+
+
+
+
+                peer.on('connection',conn=>{
+
+                    console.log("peervideo incomingconnection")
+
+                    this.peerchat.connected(conn)
+
+                    this.fire("incomingconnection","")
+                    this.fire("connected",{})
+
+
+                })
+
+
+
+    
+
+                this.peervideo = new Video(peer,this.param)
+
+
+                this.peervideo.on("streamclose",e=>{
+
+                    console.log("steam calose")
+
+                    this.fire("streamclose",{})
+                })
+
+
+                this.peervideo.on("streamcall",e=>{
+
+                    console.log("steam call")
+
+                    this.fire("streamcall",{})
+                })
+
     
                 this.callback("done")
 
@@ -123,15 +167,30 @@ export default class PeerVideo extends Notification{
 
     }
 
-    
+
+
     
     
     
     startVideo(){
 
+
+
         console.log("start video")
 
         this.peervideo.startVideo()
+
+        this.isVideoStreaming = true
+
+    }
+
+
+    stopVideo(){
+
+        this.peervideo.stopVideo()
+
+        this.isVideoStreaming = false
+
 
     }
 
@@ -139,9 +198,12 @@ export default class PeerVideo extends Notification{
 
 
     sendMsg(data){
-        //console.log(data)
 
-        console.log(this.peerchat)
+
+
+        console.log(data)
+
+  
 
         this.peerchat.send(data)
     }

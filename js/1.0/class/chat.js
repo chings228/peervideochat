@@ -1,5 +1,5 @@
 
-import Notification from "./notification";
+import Notification from "./notification.js";
 
 
 
@@ -32,7 +32,7 @@ export default class Chat extends Notification{
         this.init()
 
 
-        this.lastMsg = ''
+        this.lastMsg = null
 
         this.isConnected = false
 
@@ -41,9 +41,9 @@ export default class Chat extends Notification{
 
     init(){
 
-        console.log("connect to ",this.param.guestid)
+        //console.log("connect to ",this.param.guestid)
 
-        console.log(this.param.guestid)
+       // console.log(this.param.guestid)
 
         this.conn = this.peer.connect(this.param.guestid)
 
@@ -58,6 +58,9 @@ export default class Chat extends Notification{
 
 
 
+
+
+
         })
 
 
@@ -67,60 +70,48 @@ export default class Chat extends Notification{
 
             console.log("error",e)
 
-            // this.conn =  this.peer.connect(this.param.guestid)
+            this.conn =  this.peer.connect(this.param.guestid)
+
          })
 
 
 
-         this.peer.on('close',e=>{
-            console.log("peer close",e)
-         })
+
+    }
 
 
-         this.peer.on('error',e=>{
+    connected(conn){
 
-            console.log("peer err",e)
-         })
+        console.log("conn",conn)
 
+        console.log("connection")
 
+        if (this.param.isHost){
 
-        this.peer.on('connection',conn=>{
+            this.conn =  this.peer.connect(this.param.guestid)
 
-
-            console.log("conn",conn)
-
-            console.log("connection")
-
-            // this.fire("connectionconnected","")
-
-            //console.log('lastMsg',this.lastMsg)
+        }
 
 
-            this.isConnected = true
+        if (this.lastMsg !== null){
 
-            console.log("peer connection isconnected",this.isConnected)
+            setTimeout(()=>{
+                console.log("not null resend",this.lastMsg)
 
-            
-            if (this.param.isHost){
+                this.conn.send(this.lastMsg)
 
-                this.conn =  this.peer.connect(this.param.guestid)
+            },100)
 
-            }
+        }
 
 
 
-   
 
-            conn.on('data',data=>{
+        conn.on('data',data=>{
 
-                //console.log(data)
+            //console.log(data)
 
-                this.fire('msgreceive',data)
-   
-                
-
-            })
-
+            this.fire('msgreceive',data)
 
 
         })
@@ -134,10 +125,8 @@ export default class Chat extends Notification{
     send(data){
 
 
-    
 
-
-        console.log("peerconnection",this.conn.peerConnection)
+        //console.log("peerconnection",this.conn.peerConnection)
 
 
         if (this.conn.peerConnection === null){
@@ -145,11 +134,19 @@ export default class Chat extends Notification{
             console.log("null connection")
            
 
+
+            this.lastMsg = data
             this.conn =  this.peer.connect(this.param.guestid)
+
+            this.fire("disconnected",{})
+
+
 
 
         }
         else{
+
+            this.lastMsg = null
 
             this.conn.send(data)
 

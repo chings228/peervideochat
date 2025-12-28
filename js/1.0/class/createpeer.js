@@ -1,5 +1,5 @@
 
-import turnserver from   "./turnserver"
+import turnserver from   "./turnserver.js"
 import {Peer} from "https://esm.sh/peerjs@1.5.4?bundle-deps"
 
 
@@ -63,15 +63,11 @@ export default class CreatePeer{
         option.path = '/'
 
 
-        console.log(option)
-
-
-        console.log(this.param.hostid)
 
         const peer = new Peer(this.param.hostid,option)
 
 
-        console.log(peer)
+
 
         peer.on("open",e=>{
 

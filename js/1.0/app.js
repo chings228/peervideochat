@@ -1,4 +1,6 @@
-import PeerVideo from "https://peervideodev.1328.hk/js/1.0/class/peervideo.js"
+//import PeerVideo from "https://peervideodev.1328.hk/js/1.0/class/peervideo.js"
+
+import PeerVideo from "https://cdn.jsdelivr.net/gh/chings228/peervideochat@master/js/1.0/class/peervideo.js"
 
 
 import Common  from "./class/common"
@@ -7,7 +9,21 @@ import Common  from "./class/common"
 let peerconnect 
 
 
+
+window.isConnected = false
+
+let guestdiv = $("#guest")
+
+
+    const stopVideoBtn = $("#stopVideoBtn")
+    const requestVideoBtn = $("#requestVideoBtn")
+
+
+
 init()
+
+
+
 
 
 
@@ -18,6 +34,8 @@ function init(){
 
     let isHost = true
     let peerid = ''
+
+
 
     console.log(Common.getUrlParameter("guestid"))
 
@@ -61,19 +79,10 @@ function init(){
         
         const guestlink = `${window.location.origin}/?guestid=${peerid}`
         
-        document.getElementById('guestlink').innerText = guestlink
-
-
-        $("#videobtndiv").css("display","block")
+        document.getElementById('guestlink').innerHTML = `<a href=${guestlink} target=_blank>${guestlink}</a>`
 
 
 
-            $("#requestVideobtn").click(()=>{
-
-                startVideo()
-            })
-
-    }
 
 
 
@@ -88,6 +97,7 @@ function init(){
 
 
 
+    }
 
     
      peerconnect = new PeerVideo(param,e=>{
@@ -98,17 +108,40 @@ function init(){
 
 
 
-        // setTimeout(()=>{ startVideo()},1000
-
-        // )
 
 
-
-
-        // comment to stop video part 
-
-        //startVideo()
        
+    })
+
+
+
+
+
+    peerconnect.on("incomingconnection",e=>{
+
+
+        console.log("apps incomingconnection connected")
+
+        console.log("isVideoStreaming",peerconnect.isVideoStreaming)
+
+        if (peerconnect.isVideoStreaming && isHost){
+
+            const data = {}
+            data.key = 'admin'
+            data.content= 'requestVideo'
+        
+            console.log(data)
+
+
+            setTimeout(()=>{
+                peerconnect.sendMsg(data)
+            },1000)
+        
+            
+
+
+        }
+
     })
    
    
@@ -126,6 +159,75 @@ function init(){
     })
 
 
+    peerconnect.on("disconnected",e=>{
+
+        console.log("disconnected")
+
+        isConnected = false
+
+    })
+
+
+    peerconnect.on("connected",e=>{
+
+        console.log("connected")
+
+        if (isHost){
+
+            requestVideoBtn.css("display","block")
+        }
+
+
+
+        isConnected = true
+    })
+
+
+
+    peerconnect.on("streamclose",e=>{
+
+        console.log("stream close")
+
+        guestdiv.css("display","none")
+
+        stopVideoBtn.css("display","none")
+
+
+
+    })
+
+
+
+    peerconnect.on("streamcall",e=>{
+
+        console.log("stream call")
+
+        guestdiv.css("display","block")
+
+        stopVideoBtn.css("display","block")
+    })
+
+
+
+ 
+    stopVideoBtn.click(()=>{
+
+        peerconnect.stopVideo()
+    })
+
+
+    requestVideoBtn.click(()=>{
+
+        startVideo()
+    })
+
+
+
+
+}
+
+
+
 
     $("#sendbtn").click(e=>{
 
@@ -135,7 +237,7 @@ function init(){
 
     })
 
-}
+
 
 
 
@@ -148,12 +250,23 @@ function startVideo(){
 
     peerconnect.startVideo()
 
-    const data = {}
-    data.key = 'requestVideo'
 
-    console.log(data)
 
-    peerconnect.sendMsg(data)
+        const data = {}
+        data.content = 'requestVideo'
+        data.key = 'admin'
+    
+        console.log(data)
+    
+        peerconnect.sendMsg(data)
+
+
+
+
+
+
+
+
 
 
 }
@@ -176,9 +289,18 @@ function handleText(e){
 
 
     }
-    else if (e.key == 'requestVideo'){
+    else if (e.key == 'admin'){
 
-        peerconnect.startVideo()
+
+        if (e.content = 'requestVideo'){
+
+
+            console.log("request video")
+
+            peerconnect.startVideo()
+        }
+
+
     }
 
     

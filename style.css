@@ -43,10 +43,23 @@
 }
 
 #guestlink{
-
+    padding : 5px;
     background-color: bisque;
 }
 
-#videobtndiv{
+#requestVideoBtn{
     display:none;
+
+}
+
+#stopVideoBtn{
+    display:none;
+
+
+}
+
+
+
+#guest{
+    display: none;
 }
