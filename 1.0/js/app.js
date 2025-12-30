@@ -91,13 +91,15 @@ function init(){
     // random text 
 
 
-    let randomtext = `${Common.makeid(4)} ${Common.makeid(6)}`
 
-    $("#inputtext").val(randomtext)
 
 
 
     }
+
+    let randomtext = `${Common.makeid(4)} ${Common.makeid(6)}`
+
+    $("#inputtext").val(randomtext)
 
     
      peerconnect = new PeerVideo(param,e=>{
