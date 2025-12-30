@@ -1,12 +1,18 @@
-//import PeerVideo from "https://peervideodev.1328.hk/js/1.0/class/peervideo.js"
 
-import PeerVideo from "https://cdn.jsdelivr.net/gh/chings228/peervideochat@master/js/1.0/class/peervideo.js"
+
+import PeerVideo from './class/peervideo.js'
+
+//import PeerVideo from "https://peervideodev.1328.hk/1.0/js/class/peervideo.js"
+
+// import PeerVideo from "https://cdn.jsdelivr.net/gh/chings228/peervideochat@master/js/1.0/class/peervideo.js"
 
 
 import Common  from "./class/common"
 
 
 let peerconnect 
+
+let version = "1.0"
 
 
 
@@ -75,11 +81,18 @@ function init(){
 
     if (isHost){
 
-        window.history.pushState({},null,`${window.location.origin}/?hostid=${peerid}`)
+
+        let newhostlink = `${window.location.origin}/${version}/?hostid=${peerid}`
+
         
-        const guestlink = `${window.location.origin}/?guestid=${peerid}`
+        
+        const guestlink = `${window.location.origin}/${version}/?guestid=${peerid}`
         
         document.getElementById('guestlink').innerHTML = `<a href=${guestlink} target=_blank>${guestlink}</a>`
+
+
+
+        window.history.pushState({},null,newhostlink)
 
 
 
