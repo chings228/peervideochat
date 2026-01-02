@@ -4,7 +4,7 @@ import PeerVideo from './class/peervideo.js'
 
 //import PeerVideo from "https://peervideodev.1328.hk/1.0/js/class/peervideo.js"
 
-// import PeerVideo from "https://cdn.jsdelivr.net/gh/chings228/peervideochat@master/js/1.0/class/peervideo.js"
+// import PeerVideo from "https://cdn.jsdelivr.net/gh/chings228/peervideochat@master/1.0/js/class/peervideo.js"
 
 
 import Common  from "./class/common"
@@ -12,7 +12,30 @@ import Common  from "./class/common"
 
 let peerconnect 
 
-let version = "1.0"
+let version = "2.0"
+
+
+let paths = window.location.href.split("/")
+
+
+console.log(paths)
+
+paths.forEach(ele=>{
+
+
+
+    if (parseFloat(ele)>0){
+        version = ele
+    }
+
+})
+
+
+
+console.log(version)
+
+
+
 
 
 

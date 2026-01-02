@@ -128,8 +128,11 @@ export default class Chat extends Notification{
 
         //console.log("peerconnection",this.conn.peerConnection)
 
+        console.log(this.conn)
 
-        if (this.conn.peerConnection === null){
+
+        if (this.conn === undefined){
+
 
             console.log("null connection")
            
@@ -140,6 +143,20 @@ export default class Chat extends Notification{
 
             this.fire("disconnected",{})
 
+        }
+
+
+        else if ( this.conn.peerConnection === null ){
+
+
+            console.log("null connection")
+           
+
+
+            this.lastMsg = data
+            this.conn =  this.peer.connect(this.param.guestid)
+
+            this.fire("disconnected",{})
 
 
 

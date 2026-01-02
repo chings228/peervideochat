@@ -1,0 +1,24 @@
+{
+  "name": "peervideochat",
+  "version": "1.0.0",
+  "description": "video text through peer to peer",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chings228/peervideochat.git"
+  },
+  "keywords": [
+    "peer",
+    "video",
+    "chat"
+  ],
+  "author": "tom",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chings228/peervideochat/issues"
+  },
+  "homepage": "https://github.com/chings228/peervideochat#readme"
+}
