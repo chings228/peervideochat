@@ -22,3 +22,30 @@ peervideopath = 'https://peervideodev.1328.hk/2.0/js/class/peervideo.js'
 
 
 })      
+
+**method**
+
+ this.peervideo.startVideo()
+
+
+ 
+        const data = {}
+        data.content = 'requestVideo'
+        data.key = 'admin'
+        data.to = 'guest'
+    
+        console.log(data)
+    
+        this.peervideo.sendMsg(data)
+
+**listener**
+
+incomingconnection
+
+connected
+
+incomingdata
+
+
+
+
