@@ -93,7 +93,7 @@ function init(){
 
     const param = {}
 
-    param.hostdivid  = 'host'
+    param.owndivid  = 'own'
     param.guestdivid = 'guest'
     param.isHost = isHost
     param.peerid = peerid

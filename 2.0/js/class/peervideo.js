@@ -24,7 +24,7 @@ export default class PeerVideo extends Notification{
 
     constructor(param,callback){
 
-
+       
 
         super()
 
@@ -66,7 +66,7 @@ export default class PeerVideo extends Notification{
 
 
 
-        new CreatePeer(this.param,(res,peer)=>{
+        new CreatePeer(this.param,(res,peer,err)=>{
 
             
 
@@ -75,7 +75,12 @@ export default class PeerVideo extends Notification{
 
                 console.log("fail connect peer")
 
+                console.log(res,peer,err)
+
+                this.callback(false,err.type)
+
                 this.fire("disconnected",{});
+
             
             }
             else{
@@ -101,6 +106,7 @@ export default class PeerVideo extends Notification{
                 this.peerchat.on("chatconnected",()=>{
 
                     console.log("chat connected")
+                    this.callback(true,{})
     
                     this.fire("connected",{})
                 })
@@ -108,7 +114,7 @@ export default class PeerVideo extends Notification{
 
                 this.peerchat.on("disconnected",()=>{
 
-
+                    console.log("disconnected")
                     this.fire("disconnected",{});
                 })
     
@@ -121,10 +127,19 @@ export default class PeerVideo extends Notification{
 
                     console.log("peervideo incomingconnection")
 
-                    this.peerchat.connected(conn)
+                    console.log(this.peerchat)
 
-                    this.fire("incomingconnection","")
-                    this.fire("connected",{})
+
+
+                        this.peerchat.connected(conn)
+
+                        this.fire("incomingconnection","")
+                        this.fire("connected",{})
+    
+                        this.callback(true,{})
+                    
+
+
 
 
                 })
@@ -152,7 +167,7 @@ export default class PeerVideo extends Notification{
                 })
 
     
-                this.callback("done")
+              
 
             }
 
@@ -194,6 +209,15 @@ export default class PeerVideo extends Notification{
 
     }
 
+
+    mute(){
+
+            this.peervideo.changeMute(true)
+    }
+
+    unmute(){
+        this.peervideo.changeMute(false)
+    }
 
 
 

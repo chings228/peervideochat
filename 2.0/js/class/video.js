@@ -124,10 +124,10 @@ export default class Video extends Notification{
 
             this.stream = stream
 
-            this.addVideoStream(this.hostvideo,stream)
+            this.addVideoStream(this.ownvideo,stream)
 
 
-            this.changeMute()
+            this.changeMute(true)
 
             this.call = this.peer.call(`${this.param.guestid}`,stream);
 
@@ -199,13 +199,13 @@ export default class Video extends Notification{
 
     init(){
 
-        this.hostvideo = document.getElementById(this.param.hostdivid)
+        this.ownvideo = document.getElementById(this.param.owndivid)
         this.guestvideo = document.getElementById(this.param.guestdivid)
 
     
     }
 
-    changeMute(){
+    changeMute(status){
 
   
 
@@ -213,7 +213,7 @@ export default class Video extends Notification{
 
         // this.camerastream.getAudioTracks()[0].enabled = !mute
 
-        this.stream.getAudioTracks()[0].enabled = false
+        this.stream.getAudioTracks()[0].enabled = !status
     }
 
 

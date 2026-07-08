@@ -85,17 +85,21 @@ export default class CreatePeer{
 
             console.log("peer error",e)
 
-            this.callback(false,{})
+            this.callback(false,{},e)
         })
 
 
         peer.on("close",e=>{
             console.log("peer close")
+
+            this.callback(false,{},e)
         })
 
 
         peer.on("disconnected",e=>{
             console.log("peer disconnected")
+
+            this.callback(false,{},e)
         })
 
 

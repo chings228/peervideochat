@@ -12,6 +12,9 @@ export default class Chat extends Notification{
     isConnected
     peer
     lastMsg
+    
+
+    lastSendMsg = {}
 
 
     constructor(peer,param){
@@ -22,6 +25,9 @@ export default class Chat extends Notification{
 
 
         this.param = param
+
+        this.lastSendMsg.content = {}
+        this.lastSendMsg.time = 0
 
         console.log(this.param)
 
@@ -81,6 +87,8 @@ export default class Chat extends Notification{
 
 
     connected(conn){
+
+        
 
         console.log("conn",conn)
 
@@ -162,6 +170,32 @@ export default class Chat extends Notification{
 
         }
         else{
+
+            console.log("send")
+            console.log(data)
+
+            console.log(this.lastSendMsg)
+
+            const currTime = Date.now()
+
+            const timediff = currTime - this.lastSendMsg.time
+
+            console.log(timediff)
+
+            if (JSON.stringify(this.lastSendMsg.content) == JSON.stringify(data) && timediff < 2000){
+
+                console.log("duplicate message")
+                return
+            }
+            
+
+
+
+            this.lastSendMsg.content = data
+            this.lastSendMsg.time = currTime
+
+            console.log(this.lastSendMsg)
+
 
             this.lastMsg = null
 
